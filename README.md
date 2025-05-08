@@ -1,2 +1,3 @@
 This project is challange by chatGPT
-check demo here 
+<br>
+check demo here : https://maniktzyyy.github.io/scoreboardDOM/
