@@ -1,0 +1,394 @@
+<!-- 
+🛠️ Spesifikasi Tantangan
+HTML Structure:
+
+Dua tombol: +1 Player 1 dan +1 Player 2.
+
+Teks yang menampilkan skor untuk Player 1 dan Player 2.
+
+Input (type number) untuk skor maksimal (misal: 5, 10, dll).
+
+Tombol Reset.
+
+Fungsi Utama yang Harus Dibuat:
+
+Setiap kali tombol pemain diklik, skor bertambah satu.
+
+Jika skor salah satu pemain mencapai skor maksimal:
+
+Tampilkan "Pemain X Menang!"
+
+Nonaktifkan tombol pemain.
+
+Jika tombol reset diklik:
+
+Skor kedua pemain kembali ke 0.
+
+Tombol diaktifkan kembali.
+
+Teks "Pemain X Menang!" dihapus.
+
+Bonus:
+
+Tambahkan efek warna pada skor yang menang (misal: hijau).
+
+Tampilkan pesan berbeda jika kedua pemain imbang. 
+
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Score Board</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+      .poppins-regular {
+        font-family: "Poppins", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      .row {
+        display: flex;
+      }
+      .col {
+        display: flex;
+        flex-direction: column;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins";
+        position: relative;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        justify-content: center;
+        align-content: center;
+        gap: 50px;
+      }
+      .item {
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        position: relative;
+      }
+
+      .item .score {
+        background-color: white;
+        box-shadow: 2px 2px 5px rgba(128, 128, 128, 0.372);
+        width: 100%;
+        height: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2em;
+      }
+
+      .item .button-wrapper {
+        gap: 10px;
+      }
+      button:hover {
+        cursor: pointer;
+        scale: 1.15;
+      }
+
+      button {
+        width: 70px;
+        height: 70px;
+        background-color: white;
+        outline: none;
+        border: none;
+        box-shadow: 2px 2px 5px rgba(128, 128, 128, 0.372);
+        flex-shrink: 0;
+        border-radius: 10px;
+        font-size: 3em;
+        transition: all 0.2s ease;
+      }
+
+      #dialog-menu {
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.208);
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0 20px;
+        height: 100vh;
+        backdrop-filter: blur(10px);
+
+        width: 100%;
+      }
+
+      #dialog-result {
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.208);
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0 20px;
+        height: 100vh;
+        backdrop-filter: blur(10px);
+        display: none;
+        width: 100%;
+      }
+
+      #dialog-result button {
+        width: fit-content;
+        font-size: 1.5em;
+        padding: 0 20px;
+      }
+
+      #dialog-result .wrapper {
+        gap: 30px;
+      }
+
+      #dialog-result .item {
+        background-color: white;
+        position: relative;
+        width: 150px;
+        gap: 0;
+      }
+
+      .win {
+        border: 1px solid green;
+      }
+      .lose {
+        border: 1px solid red;
+      }
+
+      #dialog-result .finnal-score {
+        font-size: 3em;
+      }
+
+      .max-wrapper {
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .form-wrapper {
+        font-size: 0.4em;
+        gap: 20px;
+      }
+
+      .form-wrapper input {
+        outline: none;
+        font-size: 3em;
+        border: none;
+        border-bottom: 1px solid gray;
+        /* border-radius: 10px; */
+        height: fit-content;
+        padding: 25px 20px;
+      }
+
+      .form-wrapper button {
+        width: fit-content;
+        padding: 0 10px;
+      }
+
+      .fa-crown {
+        color: gold;
+        position: absolute;
+        font-size: 2em;
+        rotate: 30deg;
+        top: -20px;
+        right: 20px;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style></style>
+  </head>
+  <body>
+    <h1 style="text-align: center">Hello World</h1>
+
+    <div class="container row">
+      <div class="item a col">
+        <h2>Tim A</h2>
+        <div class="score a"></div>
+        <div class="button-wrapper row">
+          <button id="min">-</button>
+          <button id="add">+</button>
+        </div>
+      </div>
+      <div class="item b col">
+        <h2>Tim B</h2>
+        <div class="score b"></div>
+        <div class="button-wrapper row">
+          <button id="min">-</button>
+          <button id="add">+</button>
+        </div>
+      </div>
+    </div>
+    <br /><br /><br />
+    <h1 style="text-align: center">Max Score</h1>
+    <h1 id="max-score" style="text-align: center; font-weight: normal">10</h1>
+
+    <div id="dialog-menu" class="container col">
+      <h1>Choose Max Score</h1>
+      <div class="row form-wrapper">
+        <input type="number" id="form-maxScore" placeholder="Input Max Score" />
+        <button id="maxScore-sub">Submit</button>
+      </div>
+      <h3>Or</h3>
+      <div class="max-wrapper row">
+        <button value="3">3</button>
+        <button value="5">5</button>
+        <button value="11">11</button>
+        <button value="15">15</button>
+        <button value="21">21</button>
+      </div>
+    </div>
+
+    <div id="dialog-result" class="container col">
+      <h1>Congratulation</h1>
+      <h1 id="winner">Tim A</h1>
+      <div class="wrapper row">
+        <div class="item col a">
+          <!-- <i class="fa-solid fa-crown"></i> -->
+          <h2>Tim A</h2>
+          <div class="finnal-score"></div>
+        </div>
+        <div class="item col b">
+          <!-- <i class="fa-solid fa-crown"></i> -->
+          <h2>Tim B</h2>
+          <div class="finnal-score"></div>
+        </div>
+      </div>
+      <br />
+      <button onClick="window.location.reload();">Restart</button>
+    </div>
+
+    <script>
+      let maxScore;
+      let scoreA = 0;
+      let scoreB = 0;
+
+      const dialogMenu = document.querySelector("#dialog-menu");
+      const dialogResult = document.querySelector("#dialog-result");
+
+      const formMaxScore = document.querySelector("#form-maxScore");
+      const subMaxScore = document.querySelector("#maxScore-sub");
+
+      const maxScoreText = document.querySelector("#max-score");
+
+      const maxValueButton = document.querySelector(".max-wrapper");
+
+      //tim
+      const timA = document.querySelector(".item.a");
+      const timB = document.querySelector(".item.b");
+
+      //Score
+      const a = document.querySelector(".score.a");
+      const b = document.querySelector(".score.b");
+      a.innerText = scoreA;
+      b.innerText = scoreB;
+      //button add and min
+      const addButton = document.querySelector("#add");
+      const minButton = document.querySelector("#min");
+
+      //winner
+      const winnerText = document.querySelector("#winner");
+
+      //dialogwinner
+      const winnerA = document.querySelector("#dialog-result .a");
+      const winnerB = document.querySelector("#dialog-result .b");
+
+      const crown = document.createElement("i");
+      crown.classList.add("fa-solid");
+      crown.classList.add("fa-crown");
+
+      //final score
+      const finnalA = document.querySelector("#dialog-result .a .finnal-score");
+      const finnalB = document.querySelector("#dialog-result .b .finnal-score");
+
+      function checkWin() {
+        finnalA.innerText = scoreA;
+        finnalB.innerText = scoreB;
+        if (scoreA > scoreB) {
+          winnerText.innerText = "Tim A";
+          winnerA.classList.add("win");
+          winnerB.classList.add("lose");
+          winnerA.append(crown);
+        } else {
+          winnerText.innerText = "Tim B";
+          winnerA.classList.add("lose");
+          winnerB.classList.add("win");
+          winnerB.append(crown);
+        }
+      }
+
+      timA.addEventListener("click", (e) => {
+        if (e.target.id == "add") {
+          scoreA++;
+          a.innerText = scoreA;
+          if (scoreA == maxScore) {
+            console.log("gameover");
+            dialogResult.style.display = "flex";
+            checkWin();
+          }
+        } else if (e.target.id == "min") {
+          if (scoreA > 0) {
+            scoreA--;
+            a.innerText = scoreA;
+          }
+        }
+      });
+
+      timB.addEventListener("click", (e) => {
+        if (e.target.id == "add") {
+          scoreB++;
+          b.innerText = scoreB;
+          if (scoreB == maxScore) {
+            console.log("gameover");
+            dialogResult.style.display = "flex";
+            checkWin();
+          }
+        } else if (e.target.id == "min") {
+          if (scoreB > 0) {
+            scoreB--;
+            b.innerText = scoreB;
+          }
+        }
+      });
+
+      subMaxScore.addEventListener("click", () => {
+        if (formMaxScore.value) {
+          if (formMaxScore.value === "0") {
+            alert("max score cant be 0");
+          } else {
+            dialogMenu.style.display = "none";
+            maxScore = formMaxScore.value;
+            maxScoreText.innerText = formMaxScore.value;
+          }
+        } else {
+          alert("Please input number!");
+        }
+      });
+
+      maxValueButton.addEventListener("click", (event) => {
+        if (event.target.tagName === "BUTTON") {
+          dialogMenu.style.display = "none";
+          maxScore = event.target.value;
+          maxScoreText.innerText = event.target.value;
+        }
+      });
+    </script>
+  </body>
+</html>
